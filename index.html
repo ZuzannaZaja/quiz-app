@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - Egzaminy Kwalifikacyjne</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container" id="app">
+    <header class="header" id="main-header">
+      <h1>📋 Quiz Egzaminacyjny</h1>
+      <p class="subtitle">Wybierz zestaw pytań</p>
+    </header>
+
+    <div class="quiz-select" id="menu">
+      <button class="quiz-btn sep" onclick="startQuiz('sep')">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">
+          <strong>SEP G1</strong>
+          <small>Dozór i pomiary — 262 pytania</small>
+        </span>
+      </button>
+      <button class="quiz-btn fgazy" onclick="startQuiz('fgazy')">
+        <span class="btn-icon">🧊</span>
+        <span class="btn-text">
+          <strong>F-Gazy</strong>
+          <small>Certyfikat personelu — 199 pytań</small>
+        </span>
+      </button>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+      <div class="quiz-header">
+        <div class="quiz-info">
+          <span id="quiz-title"></span>
+          <span class="badge" id="progress-badge">0 / 0</span>
+        </div>
+        <div class="quiz-controls">
+          <button class="ctrl-btn" onclick="toggleShuffle()" id="shuffle-btn">🔀 Losowo</button>
+          <button class="ctrl-btn" onclick="resetQuiz()">🔄 Od nowa</button>
+          <button class="ctrl-btn" onclick="backToMenu()">◀ Powrót</button>
+        </div>
+      </div>
+
+      <div class="card" id="question-card">
+        <div class="card-number" id="question-number">Pytanie 1</div>
+        <div class="card-question" id="question-text"></div>
+        <div class="options" id="options-container"></div>
+        <div id="feedback" class="feedback hidden"></div>
+        <button class="action-btn next hidden" id="next-btn" onclick="nextQuestion()">Następne →</button>
+      </div>
+
+      <div class="stats" id="stats">
+        <div class="stat">
+          <span class="stat-label">Poprawne</span>
+          <span class="stat-value correct-count" id="correct-count">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Błędne</span>
+          <span class="stat-value wrong-count" id="wrong-count">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Postęp</span>
+          <span class="stat-value" id="progress-pct">0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="questions-sep.js"></script>
+  <script src="questions-fgazy.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
