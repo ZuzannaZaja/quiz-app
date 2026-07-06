@@ -1,5 +1,6 @@
 const LABELS = ['A', 'B', 'C', 'D']
 
+let selectedType = null
 let currentQuestions = []
 let currentIndex = 0
 let shuffleMode = false
@@ -8,8 +9,37 @@ let wrongCount = 0
 let answered = []
 let answeredCount = 0
 
-function startQuiz(type) {
-  currentQuestions = type === 'sep' ? questionsSEP : questionsFGazy
+function selectType(type) {
+  selectedType = type
+  document.getElementById('size-menu').classList.remove('hidden')
+  const btns = document.querySelectorAll('.size-btn')
+  const total = type === 'sep' ? questionsSEP.length : questionsFGazy.length
+  btns[0].setAttribute('onclick', `startQuiz('${type}', 10)`)
+  btns[1].setAttribute('onclick', `startQuiz('${type}', 20)`)
+  btns[2].setAttribute('onclick', `startQuiz('${type}', 0)`)
+  btns[2].textContent = `Wszystkie (${total})`
+  document.querySelector('.size-label').textContent = `Ile pytań z ${type === 'sep' ? 'SEP G1' : 'F-Gazy'}?`
+}
+
+function backToTypes() {
+  document.getElementById('size-menu').classList.add('hidden')
+  selectedType = null
+}
+
+function startQuiz(type, limit) {
+  const full = type === 'sep' ? questionsSEP : questionsFGazy
+  if (limit > 0 && limit < full.length) {
+    const pool = [...full]
+    currentQuestions = []
+    for (let i = 0; i < limit && pool.length > 0; i++) {
+      const idx = Math.floor(Math.random() * pool.length)
+      currentQuestions.push(pool[idx])
+      pool.splice(idx, 1)
+    }
+  } else {
+    currentQuestions = [...full]
+  }
+
   currentIndex = 0
   correctCount = 0
   wrongCount = 0
@@ -190,7 +220,9 @@ function backToMenu() {
   document.getElementById('quiz-view').classList.add('hidden')
   document.getElementById('menu').classList.remove('hidden')
   document.getElementById('main-header').classList.remove('hidden')
+  document.getElementById('size-menu').classList.add('hidden')
   document.getElementById('next-btn').textContent = 'Następne →'
+  selectedType = null
 }
 
 function updateStats() {

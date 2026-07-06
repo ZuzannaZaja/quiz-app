@@ -14,20 +14,29 @@
     </header>
 
     <div class="quiz-select" id="menu">
-      <button class="quiz-btn sep" onclick="startQuiz('sep')">
+      <button class="quiz-btn sep" onclick="selectType('sep')">
         <span class="btn-icon">⚡</span>
         <span class="btn-text">
           <strong>SEP G1</strong>
           <small>Dozór i pomiary — 262 pytania</small>
         </span>
       </button>
-      <button class="quiz-btn fgazy" onclick="startQuiz('fgazy')">
+      <button class="quiz-btn fgazy" onclick="selectType('fgazy')">
         <span class="btn-icon">🧊</span>
         <span class="btn-text">
           <strong>F-Gazy</strong>
           <small>Certyfikat personelu — 199 pytań</small>
         </span>
       </button>
+      <div id="size-menu" class="size-menu hidden">
+        <p class="size-label">Ile pytań?</p>
+        <div class="size-buttons">
+          <button class="size-btn" onclick="startQuiz('sep', 10)">10</button>
+          <button class="size-btn" onclick="startQuiz('sep', 20)">20</button>
+          <button class="size-btn" onclick="startQuiz('sep', 0)">Wszystkie</button>
+          <button class="size-btn back-btn" onclick="backToTypes()">← Wstecz</button>
+        </div>
+      </div>
     </div>
 
     <div id="quiz-view" class="hidden">
