@@ -157,17 +157,42 @@ function generateOptions(qIdx) {
   const distractors = []
   const used = new Set([correct.toLowerCase().trim()])
 
-  const pool = currentQuestions.filter(function(_, i) { return i !== qIdx })
-
-  while (distractors.length < 3 && pool.length > 0) {
-    const idx = Math.floor(Math.random() * pool.length)
-    const candidate = pool[idx].a
-    const key = candidate.toLowerCase().trim()
-    if (!used.has(key)) {
-      used.add(key)
-      distractors.push(candidate)
+  const fullBank = selectedType === 'sep' ? questionsSEP : questionsFGazy
+  if (fullBank) {
+    const fullIdx = fullBank.indexOf(currentQuestions[qIdx])
+    if (fullIdx >= 0) {
+      const group = Math.floor(fullIdx / 30) * 30
+      const groupEnd = Math.min(group + 30, fullBank.length)
+      const pool = []
+      for (let i = group; i < groupEnd; i++) {
+        if (i !== fullIdx) {
+          const key = fullBank[i].a.toLowerCase().trim()
+          if (!used.has(key)) {
+            used.add(key)
+            pool.push(fullBank[i].a)
+          }
+        }
+      }
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp
+      }
+      for (let i = 0; i < Math.min(3, pool.length); i++) {
+        distractors.push(pool[i])
+      }
     }
-    pool.splice(idx, 1)
+  }
+
+  while (distractors.length < 3) {
+    const idx = Math.floor(Math.random() * currentQuestions.length)
+    if (idx !== qIdx) {
+      const candidate = currentQuestions[idx].a
+      const key = candidate.toLowerCase().trim()
+      if (!used.has(key)) {
+        used.add(key)
+        distractors.push(candidate)
+      }
+    }
   }
 
   const options = [{ text: correct, correct: true }]
