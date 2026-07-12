@@ -14,27 +14,51 @@
     </header>
 
     <div class="quiz-select" id="menu">
-      <button class="quiz-btn sep" onclick="selectType('sep')">
-        <span class="btn-icon">⚡</span>
-        <span class="btn-text">
-          <strong>SEP G1</strong>
-          <small>Dozór i pomiary — 262 pytania</small>
-        </span>
-      </button>
-      <button class="quiz-btn fgazy" onclick="selectType('fgazy')">
-        <span class="btn-icon">🧊</span>
-        <span class="btn-text">
-          <strong>F-Gazy</strong>
-          <small>Certyfikat personelu — 199 pytań</small>
-        </span>
-      </button>
+      <div id="type-menu">
+        <button class="quiz-btn sep" onclick="selectType('sep')">
+          <span class="btn-icon">⚡</span>
+          <span class="btn-text">
+            <strong>SEP G1</strong>
+            <small>Dozór i pomiary — 276 pytań</small>
+          </span>
+        </button>
+        <button class="quiz-btn fgazy" onclick="selectType('fgazy')">
+          <span class="btn-icon">🧊</span>
+          <span class="btn-text">
+            <strong>F-Gazy</strong>
+            <small>Certyfikat personelu — 204 pytania</small>
+          </span>
+        </button>
+      </div>
+
+      <div id="mode-menu" class="size-menu hidden">
+        <p class="size-label" id="mode-label">Wybierz tryb</p>
+        <div class="size-buttons">
+          <button class="size-btn" onclick="selectMode('quiz')">📝 Quiz</button>
+          <button class="size-btn" onclick="selectMode('flashcard')">🃏 Fiszki</button>
+          <button class="size-btn back-btn" onclick="backToTypes()">← Wstecz</button>
+        </div>
+      </div>
+
       <div id="size-menu" class="size-menu hidden">
         <p class="size-label">Ile pytań?</p>
         <div class="size-buttons">
           <button class="size-btn" onclick="startQuiz('sep', 10)">10</button>
           <button class="size-btn" onclick="startQuiz('sep', 20)">20</button>
           <button class="size-btn" onclick="startQuiz('sep', 0)">Wszystkie</button>
-          <button class="size-btn back-btn" onclick="backToTypes()">← Wstecz</button>
+          <button class="size-btn" onclick="showRangeInput()">Zakres</button>
+          <button class="size-btn back-btn" onclick="backToModes()">← Wstecz</button>
+        </div>
+      </div>
+
+      <div id="range-input" class="size-menu hidden">
+        <p class="size-label">Zakres pytań <span id="range-total"></span></p>
+        <div class="section-grid" id="section-buttons"></div>
+        <div class="range-fields">
+          <label>Od: <input type="number" id="range-start" class="range-input" min="1" value="1"></label>
+          <label>Do: <input type="number" id="range-end" class="range-input" min="1"></label>
+          <button class="size-btn" onclick="startRangeQuiz()">▶ Start</button>
+          <button class="size-btn back-btn" onclick="backToSizeMenu()">← Wstecz</button>
         </div>
       </div>
     </div>
@@ -74,6 +98,51 @@
           <span class="stat-value" id="progress-pct">0%</span>
         </div>
       </div>
+    </div>
+
+    <div id="flashcard-view" class="hidden">
+      <div class="quiz-header">
+        <div class="quiz-info">
+          <span id="flashcard-title">Fiszki</span>
+          <span class="badge" id="flashcard-progress">0 / 0</span>
+        </div>
+        <div class="quiz-controls">
+          <button class="ctrl-btn" onclick="showAllFlashcards()">📖 Pokaż wszystkie</button>
+          <button class="ctrl-btn" onclick="backToMenu()">◀ Powrót</button>
+        </div>
+      </div>
+
+      <div class="card flashcard" id="flashcard" onclick="toggleAnswer()">
+        <div class="card-number" id="flashcard-number">Pytanie 1</div>
+        <div class="card-question" id="flashcard-question"></div>
+        <div id="flashcard-answer" class="flashcard-answer hidden">
+          <hr>
+          <div class="answer-label">Odpowiedź:</div>
+          <div class="answer-text" id="flashcard-answer-text"></div>
+        </div>
+        <div class="flashcard-hint" id="flashcard-hint">👆 Kliknij, aby zobaczyć odpowiedź</div>
+      </div>
+
+      <div class="flashcard-nav">
+        <button class="ctrl-btn" id="flashcard-prev" onclick="prevFlashcard()">← Poprzednie</button>
+        <div class="flashcard-jump">
+          <input type="number" id="flashcard-goto" class="goto-input" min="1" placeholder="Nr" onkeydown="if(event.key==='Enter')goToFlashcard()">
+          <button class="goto-btn" onclick="goToFlashcard()">Idź</button>
+        </div>
+        <button class="ctrl-btn" id="flashcard-next" onclick="nextFlashcard()">Następne →</button>
+      </div>
+    </div>
+
+    <div id="all-flashcards" class="hidden">
+      <div class="quiz-header">
+        <div class="quiz-info">
+          <span>Wszystkie fiszki</span>
+        </div>
+        <div class="quiz-controls">
+          <button class="ctrl-btn" onclick="closeAllFlashcards()">← Wstecz</button>
+        </div>
+      </div>
+      <div id="all-flashcards-list"></div>
     </div>
   </div>
 
