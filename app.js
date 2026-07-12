@@ -452,6 +452,7 @@ function toggleKnown(e) {
   }
   try { localStorage.setItem('quizKnown', JSON.stringify([...knownQuestions])) } catch(e) {}
   updateFlashcardUI()
+  updateAllCardUI(flashcardIndex)
 }
 
 function updateFlashcardUI() {
@@ -490,7 +491,10 @@ function showAllFlashcards() {
         '<div class="answer-label">Odpowied\u017a:</div>' +
         '<div class="answer-text">' + escapeHtml(q.a).replace(/\n/g, '<br>') + '</div>' +
       '</div>' +
-      '<div class="flashcard-hint" id="all-hint-' + i + '">\ud83d\udc46 Kliknij, aby zobaczy\u0107 odpowied\u017a</div>'
+      '<div class="flashcard-hint" id="all-hint-' + i + '">\ud83d\udc46 Kliknij, aby zobaczy\u0107 odpowied\u017a</div>' +
+      '<button class="known-btn-small" id="all-known-' + i + '" data-idx="' + i + '">' +
+        (isKnown ? '\u2714 Umiesz' : '\u2714 Umiem?') +
+      '</button>'
     card.onclick = (function(idx) {
       return function() {
         const answer = document.getElementById('all-answer-' + idx)
@@ -499,8 +503,53 @@ function showAllFlashcards() {
         if (hint) hint.classList.toggle('hidden')
       }
     })(i)
+    const knownBtn = card.querySelector('.known-btn-small')
+    knownBtn.onclick = (function(idx) {
+      return function(e) {
+        e.stopPropagation()
+        toggleKnownFor(idx)
+        const isKnownNow = knownQuestions.has(prefix + idx)
+        card.classList.toggle('known', isKnownNow)
+        knownBtn.textContent = isKnownNow ? '\u2714 Umiesz' : '\u2714 Umiem?'
+        const numDiv = card.querySelector('.card-number')
+        if (numDiv) {
+          const baseText = 'Pytanie ' + (idx + 1)
+          numDiv.textContent = baseText + (isKnownNow ? ' \u2714' : '')
+        }
+        document.getElementById('known-count').textContent = 'Umiem: ' + knownCount() + '/' + flashcardQuestions.length
+      }
+    })(i)
     list.appendChild(card)
   })
+}
+
+function toggleKnownFor(idx) {
+  const prefix = document.getElementById('flashcard-title').textContent + '::'
+  const key = prefix + idx
+  if (knownQuestions.has(key)) {
+    knownQuestions.delete(key)
+  } else {
+    knownQuestions.add(key)
+  }
+  try { localStorage.setItem('quizKnown', JSON.stringify([...knownQuestions])) } catch(e) {}
+  if (idx === flashcardIndex) updateFlashcardUI()
+}
+
+function updateAllCardUI(idx) {
+  const allView = document.getElementById('all-flashcards')
+  if (!allView || allView.classList.contains('hidden')) return
+  const prefix = document.getElementById('flashcard-title').textContent + '::'
+  const isKnown = knownQuestions.has(prefix + idx)
+  const allCard = document.getElementById('all-known-' + idx)
+  if (!allCard) return
+  allCard.textContent = isKnown ? '\u2714 Umiesz' : '\u2714 Umiem?'
+  const cardItem = allCard.closest('.flashcard-item')
+  if (cardItem) cardItem.classList.toggle('known', isKnown)
+  const numDiv = cardItem ? cardItem.querySelector('.card-number') : null
+  if (numDiv) {
+    numDiv.textContent = 'Pytanie ' + (idx + 1) + (isKnown ? ' \u2714' : '')
+  }
+  document.getElementById('known-count').textContent = 'Umiem: ' + knownCount() + '/' + flashcardQuestions.length
 }
 
 function closeAllFlashcards() {
