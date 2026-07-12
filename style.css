@@ -335,3 +335,135 @@ body {
 .size-btn:hover { border-color: #3b82f6; background: #f8faff; }
 .size-btn.back-btn { border-color: transparent; color: #888; font-weight: 400; }
 .size-btn.back-btn:hover { color: #666; background: #f5f5f5; }
+
+.section-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.section-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.section-btn:hover {
+  border-color: #3b82f6;
+  background: #f8faff;
+}
+
+.range-fields {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.range-input {
+  width: 72px;
+  padding: 8px 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.flashcard {
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 180px;
+  user-select: none;
+}
+
+.flashcard-answer {
+  margin-top: 16px;
+  animation: fadeIn 0.3s;
+}
+
+.answer-label {
+  font-size: 13px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.answer-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #16a34a;
+}
+
+.flashcard-hint {
+  text-align: center;
+  color: #bbb;
+  font-size: 14px;
+  margin-top: 28px;
+}
+
+.flashcard-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.flashcard-nav .ctrl-btn {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.flashcard-nav .ctrl-btn:disabled {
+  opacity: 0.35;
+}
+
+.flashcard-jump {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.goto-input {
+  width: 52px;
+  padding: 10px 6px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.goto-btn {
+  padding: 10px 12px;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.goto-btn:hover {
+  background: #2563eb;
+}
+
+.flashcard-item {
+  cursor: pointer;
+  margin-bottom: 14px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.flashcard-item:hover {
+  border-color: #3b82f6;
+}
