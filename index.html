@@ -105,6 +105,7 @@
         <div class="quiz-info">
           <span id="flashcard-title">Fiszki</span>
           <span class="badge" id="flashcard-progress">0 / 0</span>
+          <span class="badge known-badge" id="known-count">Umiem: 0/0</span>
         </div>
         <div class="quiz-controls">
           <button class="ctrl-btn" onclick="showAllFlashcards()">📖 Pokaż wszystkie</button>
@@ -121,6 +122,9 @@
           <div class="answer-text" id="flashcard-answer-text"></div>
         </div>
         <div class="flashcard-hint" id="flashcard-hint">👆 Kliknij, aby zobaczyć odpowiedź</div>
+        <div class="flashcard-known-bar">
+          <button class="known-btn" id="known-btn" onclick="toggleKnown(event)">✔ Umiem?</button>
+        </div>
       </div>
 
       <div class="flashcard-nav">

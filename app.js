@@ -11,6 +11,7 @@ let answeredCount = 0
 
 let flashcardQuestions = []
 let flashcardIndex = 0
+let knownQuestions = new Set()
 
 function selectType(type) {
   selectedType = type
@@ -152,6 +153,16 @@ function showQuestion() {
   updateStats()
 }
 
+function wordOverlap(a, b) {
+  const wordsA = a.toLowerCase().replace(/[^a-z0-9\u0105\u0107\u0119\u0142\u0144\u00f3\u015b\u017a\u017c\s]/g, ' ').split(/\s+/).filter(function(w) { return w.length > 2 })
+  const wordsB = new Set(b.toLowerCase().replace(/[^a-z0-9\u0105\u0107\u0119\u0142\u0144\u00f3\u015b\u017a\u017c\s]/g, ' ').split(/\s+/).filter(function(w) { return w.length > 2 }))
+  var count = 0
+  for (var i = 0; i < wordsA.length; i++) {
+    if (wordsB.has(wordsA[i])) count++
+  }
+  return count
+}
+
 function generateOptions(qIdx) {
   const correct = currentQuestions[qIdx].a
   const distractors = []
@@ -161,24 +172,27 @@ function generateOptions(qIdx) {
   if (fullBank) {
     const fullIdx = fullBank.indexOf(currentQuestions[qIdx])
     if (fullIdx >= 0) {
-      const group = Math.floor(fullIdx / 30) * 30
-      const groupEnd = Math.min(group + 30, fullBank.length)
-      const pool = []
+      const groupSize = 20
+      const group = Math.floor(fullIdx / groupSize) * groupSize
+      const groupEnd = Math.min(group + groupSize, fullBank.length)
+      const scored = []
       for (let i = group; i < groupEnd; i++) {
         if (i !== fullIdx) {
           const key = fullBank[i].a.toLowerCase().trim()
           if (!used.has(key)) {
             used.add(key)
-            pool.push(fullBank[i].a)
+            scored.push({ text: fullBank[i].a, score: wordOverlap(correct, fullBank[i].a) })
           }
         }
       }
-      for (let i = pool.length - 1; i > 0; i--) {
+      scored.sort(function(a, b) { return b.score - a.score })
+      const top = scored.slice(0, Math.min(5, scored.length))
+      for (let i = top.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp
+        const tmp = top[i]; top[i] = top[j]; top[j] = tmp
       }
-      for (let i = 0; i < Math.min(3, pool.length); i++) {
-        distractors.push(pool[i])
+      for (let i = 0; i < Math.min(3, top.length); i++) {
+        distractors.push(top[i].text)
       }
     }
   }
@@ -373,6 +387,7 @@ function showFlashcard() {
 
   document.getElementById('flashcard-prev').disabled = flashcardIndex === 0
   document.getElementById('flashcard-next').disabled = flashcardIndex === flashcardQuestions.length - 1
+  updateFlashcardUI()
 }
 
 function toggleAnswer() {
@@ -414,6 +429,47 @@ function goToFlashcard() {
   showFlashcard()
 }
 
+function knownKey() {
+  return document.getElementById('flashcard-title').textContent + '::' + flashcardIndex
+}
+
+function knownCount() {
+  const prefix = document.getElementById('flashcard-title').textContent + '::'
+  var count = 0
+  for (var k = 0; k < flashcardQuestions.length; k++) {
+    if (knownQuestions.has(prefix + k)) count++
+  }
+  return count
+}
+
+function toggleKnown(e) {
+  if (e) e.stopPropagation()
+  const key = knownKey()
+  if (knownQuestions.has(key)) {
+    knownQuestions.delete(key)
+  } else {
+    knownQuestions.add(key)
+  }
+  try { localStorage.setItem('quizKnown', JSON.stringify([...knownQuestions])) } catch(e) {}
+  updateFlashcardUI()
+}
+
+function updateFlashcardUI() {
+  const key = knownKey()
+  const card = document.getElementById('flashcard')
+  const btn = document.getElementById('known-btn')
+  if (knownQuestions.has(key)) {
+    card.classList.add('flashcard-known')
+    btn.textContent = '\u2714 Umiesz'
+    btn.classList.add('known-active')
+  } else {
+    card.classList.remove('flashcard-known')
+    btn.textContent = '\u2714 Umiem?'
+    btn.classList.remove('known-active')
+  }
+  document.getElementById('known-count').textContent = 'Umiem: ' + knownCount() + '/' + flashcardQuestions.length
+}
+
 function showAllFlashcards() {
   document.getElementById('flashcard-view').classList.add('hidden')
   document.getElementById('all-flashcards').classList.remove('hidden')
@@ -421,11 +477,13 @@ function showAllFlashcards() {
   const list = document.getElementById('all-flashcards-list')
   list.innerHTML = ''
 
+  const prefix = document.getElementById('flashcard-title').textContent + '::'
   flashcardQuestions.forEach(function(q, i) {
+    const isKnown = knownQuestions.has(prefix + i)
     const card = document.createElement('div')
-    card.className = 'card flashcard-item'
+    card.className = 'card flashcard-item' + (isKnown ? ' known' : '')
     card.innerHTML =
-      '<div class="card-number">Pytanie ' + (i + 1) + '</div>' +
+      '<div class="card-number">Pytanie ' + (i + 1) + (isKnown ? ' \u2714' : '') + '</div>' +
       '<div class="card-question">' + escapeHtml(q.q) + '</div>' +
       '<div class="flashcard-answer hidden" id="all-answer-' + i + '">' +
         '<hr>' +
@@ -469,3 +527,8 @@ function escapeHtml(str) {
   div.textContent = str
   return div.innerHTML
 }
+
+try {
+  const saved = localStorage.getItem('quizKnown')
+  if (saved) knownQuestions = new Set(JSON.parse(saved))
+} catch(e) {}
