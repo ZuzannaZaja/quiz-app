@@ -467,3 +467,49 @@ body {
 .flashcard-item:hover {
   border-color: #3b82f6;
 }
+
+.flashcard-known {
+  border-color: #22c55e !important;
+  background: #f0fdf4;
+}
+
+.flashcard-known .card-number::after {
+  content: ' \2714';
+  color: #16a34a;
+}
+
+.flashcard-item.known {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.known-badge {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.known-btn {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.known-btn:hover {
+  border-color: #22c55e;
+}
+
+.known-btn.known-active {
+  background: #22c55e;
+  color: #fff;
+  border-color: #22c55e;
+}
+
+.flashcard-known-bar {
+  margin-top: 20px;
+  text-align: center;
+}
